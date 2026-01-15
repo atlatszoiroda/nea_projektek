@@ -58,12 +58,12 @@ export function Sidebar() {
         {/* Footer */}
         <div className="border-t border-sidebar-border p-4">
           <a
-            href="https://atlatszo.hu"
+            href="https://atlatszo.hu/tamogatom/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
-            <span>Szeretettel ❤️</span>
+            <span>Támogatom ❤️</span>
             <span className="font-medium text-primary">Átlátszó</span>
           </a>
         </div>

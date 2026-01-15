@@ -92,7 +92,9 @@ export function BarChartComponent({
           borderRadius: '8px',
           boxShadow: '0 8px 32px -8px hsl(0 0% 0% / 0.4)',
           padding: '12px',
-          color: 'hsl(var(--foreground))'
+          color: 'hsl(var(--foreground))',
+          transform: 'translateX(-100%)',
+          pointerEvents: 'none'
         }}>
           <p className="font-semibold mb-2">{label}</p>
           <div className="space-y-1 text-sm">

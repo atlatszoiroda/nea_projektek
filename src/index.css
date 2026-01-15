@@ -152,7 +152,7 @@
   }
 
   .data-table th {
-    @apply bg-muted px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+    @apply bg-muted px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground;
   }
 
   .data-table td {

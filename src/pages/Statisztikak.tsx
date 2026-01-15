@@ -125,7 +125,7 @@ export default function Statisztikak() {
           />
           <StatCard
             title="Összes pályázaton belüli arány"
-            value={`${successRate.toFixed(1)}%`}
+            value={`${successRate.toFixed(1).replace('.', ',')}%`}
             icon={Percent}
             variant="success"
           />
