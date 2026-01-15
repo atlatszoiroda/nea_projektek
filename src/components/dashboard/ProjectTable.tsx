@@ -167,7 +167,7 @@ export function ProjectTable({ projects, groupedProjects, maxRows }: ProjectTabl
                 (paginatedData as Project[]).map((project, idx) => (
                   <tr key={`${project.azonosito}-${idx}`} className="group border-b border-border/50 last:border-0 hover:bg-muted/50">
                     <td className="px-4 py-3 align-top">
-                      <span className="font-mono text-xs text-muted-foreground">{project.azonosito}</span>
+                      <span className="font-mono text-xs text-foreground">{project.azonosito}</span>
 
                     </td>
                     <td className="max-w-[250px] px-4 py-3 align-top">
