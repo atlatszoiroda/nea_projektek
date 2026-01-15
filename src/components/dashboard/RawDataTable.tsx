@@ -26,7 +26,7 @@ const statusColors: Record<string, string> = {
     'nem támogatott': 'bg-destructive/20 text-destructive border-destructive/30',
     'Elutasított': 'bg-destructive/20 text-destructive border-destructive/30',
     'elutasított': 'bg-destructive/20 text-destructive border-destructive/30',
-    'Érvénytelen': 'bg-muted text-muted-foreground border-border',
+    'Érvénytelen': 'bg-muted text-foreground border-border',
     'Várólistás': 'bg-warning/20 text-warning border-warning/30',
 };
 
@@ -96,7 +96,7 @@ export function RawDataTable({ projects, maxRows }: RawDataTableProps) {
                                 {headers.map((header) => (
                                     <th
                                         key={header.id}
-                                        className={`cursor-pointer hover:bg-muted/80 px-4 py-3 text-left font-medium text-muted-foreground ${header.className || ''}`}
+                                        className={`cursor-pointer hover:bg-muted/80 px-4 py-3 text-left font-medium text-foreground ${header.className || ''}`}
                                         onClick={() => handleSort(header.id)}
                                     >
                                         <div className={`flex items-center gap-1 ${header.className?.includes('text-right') ? 'justify-end' : ''}`}>
@@ -110,30 +110,30 @@ export function RawDataTable({ projects, maxRows }: RawDataTableProps) {
                         <tbody className="divide-y divide-border">
                             {paginatedData.map((project, idx) => (
                                 <tr key={`${project.azonosito}-${idx}`} className="group hover:bg-muted/50 transition-colors">
-                                    <td className="px-4 py-3 font-mono !text-[10px] text-muted-foreground whitespace-nowrap">
+                                    <td className="px-4 py-3 font-mono !text-[10px] text-foreground whitespace-nowrap">
                                         {project.azonosito}
                                     </td>
                                     <td className="px-4 py-3 font-medium truncate" title={project.szervezet_neve}>
                                         {project.szervezet_neve}
                                     </td>
-                                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground whitespace-nowrap">
+                                    <td className="px-4 py-3 font-mono text-xs text-foreground whitespace-nowrap">
                                         {project.adoszama}
                                     </td>
                                     <td className="px-4 py-3 truncate" title={project.szekhely_varos}>
                                         {project.szekhely_varos}
                                     </td>
-                                    <td className="px-4 py-3 text-muted-foreground truncate" title={project.besorolas}>
+                                    <td className="px-4 py-3 text-foreground truncate" title={project.besorolas}>
                                         {project.besorolas}
                                     </td>
                                     <td className="px-4 py-3 text-right font-medium tabular-nums whitespace-nowrap">
                                         {formatCurrency(project.tamogatas)}
                                     </td>
                                     <td className="px-4 py-3 whitespace-nowrap">
-                                        <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[project.palyazati_dontes] || 'bg-muted text-muted-foreground border-border'}`}>
+                                        <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[project.palyazati_dontes] || 'bg-muted text-foreground border-border'}`}>
                                             {project.palyazati_dontes}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-3 text-muted-foreground max-w-[400px] truncate" title={project.palyazat_targya}>
+                                    <td className="px-4 py-3 text-foreground max-w-[400px] truncate" title={project.palyazat_targya}>
                                         {project.palyazat_targya}
                                     </td>
                                 </tr>

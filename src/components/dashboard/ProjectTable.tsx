@@ -27,7 +27,7 @@ const statusColors: Record<string, string> = {
   'nem támogatott': 'bg-destructive/20 text-destructive border-destructive/30',
   'Elutasított': 'bg-destructive/20 text-destructive border-destructive/30',
   'elutasított': 'bg-destructive/20 text-destructive border-destructive/30',
-  'Érvénytelen': 'bg-muted text-muted-foreground border-border',
+  'Érvénytelen': 'bg-muted text-foreground border-border',
   'Várólistás': 'bg-warning/20 text-warning border-warning/30',
 };
 
@@ -151,10 +151,10 @@ export function ProjectTable({ projects, groupedProjects, maxRows }: ProjectTabl
                     <td colSpan={2}>
                       <div className="font-medium">{group.name}</div>
                       {group.adoszama && (
-                        <div className="text-xs text-muted-foreground font-mono">{group.adoszama}</div>
+                        <div className="text-xs text-foreground font-mono">{group.adoszama}</div>
                       )}
                     </td>
-                    <td colSpan={2} className="text-muted-foreground">
+                    <td colSpan={2} className="text-foreground">
                       {group.count} db projekt
                     </td>
                     <td className="text-right font-bold tabular-nums text-primary">
@@ -172,15 +172,15 @@ export function ProjectTable({ projects, groupedProjects, maxRows }: ProjectTabl
                     </td>
                     <td className="max-w-[250px] px-4 py-3 align-top">
                       <div className="truncate font-medium">{project.szervezet_neve}</div>
-                      <div className="text-xs text-muted-foreground font-mono">{project.adoszama}</div>
+                      <div className="text-xs text-foreground font-mono">{project.adoszama}</div>
                     </td>
                     <td className="px-4 py-3 align-top">{project.szekhely_varos}</td>
-                    <td className="max-w-[150px] truncate px-4 py-3 align-top text-muted-foreground">{project.besorolas}</td>
+                    <td className="max-w-[150px] truncate px-4 py-3 align-top text-foreground">{project.besorolas}</td>
                     <td className="px-4 py-3 align-top text-right font-medium tabular-nums">
                       {formatCurrency(project.tamogatas)}
                     </td>
                     <td className="px-4 py-3 align-top">
-                      <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[project.palyazati_dontes] || 'bg-muted text-muted-foreground border-border'}`}>
+                      <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[project.palyazati_dontes] || 'bg-muted text-foreground border-border'}`}>
                         {project.palyazati_dontes}
                       </span>
                     </td>

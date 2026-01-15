@@ -94,9 +94,13 @@ export function BarChartComponent({
           padding: '12px',
           color: 'hsl(var(--foreground))',
           transform: 'translateX(-100%)',
-          pointerEvents: 'none'
+          pointerEvents: 'none',
+          maxWidth: '300px',
+          width: 'max-content',
+          whiteSpace: 'normal',
+          wordWrap: 'break-word'
         }}>
-          <p className="font-semibold mb-2">{label}</p>
+          <p className="font-semibold mb-2 leading-tight">{label}</p>
           <div className="space-y-1 text-sm">
             <p>
               <span className="text-muted-foreground">{tooltipLabel}: </span>
