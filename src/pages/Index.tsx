@@ -93,7 +93,7 @@ export default function Index() {
                   ? filters.dontes[0]
                   : "Kiválasztott döntések"
             }
-            value={formatCurrency(aggregatedData.osszesTamogatas)}
+            value={formatCurrency(aggregatedData.osszesOsszeg)}
             icon={Wallet}
             variant="primary"
           />
@@ -110,7 +110,7 @@ export default function Index() {
           />
           <StatCard
             title="Nyertesek átlagos támogatása"
-            value={formatCurrency(globalStats.averageWinnerSupport)}
+            value={formatCurrency(Math.round(globalStats.averageWinnerSupport))}
             icon={TrendingUp}
           />
         </div>

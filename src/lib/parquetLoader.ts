@@ -91,6 +91,7 @@ export async function loadParquetData(): Promise<Project[]> {
         szekhely_varos: String(row.szekhely_varos ?? 'N/A'),
         szekhely_orszag: String(row.szekhely_orszag ?? 'Magyarország'),
         szervezet_tipusa: String(row.szervezet_tipusa ?? 'N/A'),
+        osszeg: parseHungarianNumber(row.osszeg),
         tamogatas: parseHungarianNumber(row.tamogatas),
         palyazati_dontes: normalizeStatus(String(row.palyazati_dontes ?? '')),
         palyazat_targya: String(row.palyat_targya ?? row.palyazat_targya ?? ''),

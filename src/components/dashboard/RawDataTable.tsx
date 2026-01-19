@@ -8,7 +8,7 @@ interface RawDataTableProps {
     maxRows?: number;
 }
 
-type SortField = keyof Project;
+type SortField = keyof Project | 'tamogatas';
 type SortDirection = 'asc' | 'desc';
 
 function formatCurrency(amount: number): string {
@@ -31,7 +31,7 @@ const statusColors: Record<string, string> = {
 };
 
 export function RawDataTable({ projects, maxRows }: RawDataTableProps) {
-    const [sortField, setSortField] = useState<SortField>('tamogatas');
+    const [sortField, setSortField] = useState<SortField>('osszeg');
     const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
     const [page, setPage] = useState(0);
     const rowsPerPage = maxRows || 20;
@@ -81,7 +81,8 @@ export function RawDataTable({ projects, maxRows }: RawDataTableProps) {
         { id: 'adoszama', label: 'Adószám', className: 'w-[120px]' },
         { id: 'szekhely_varos', label: 'Város', className: 'w-[15%] min-w-[120px]' },
         { id: 'besorolas', label: 'Besorolás', className: 'w-[15%] min-w-[120px]' },
-        { id: 'tamogatas', label: 'Támogatás', className: 'w-[130px] text-right' },
+        { id: 'tamogatas', label: 'Igényelt tám.', className: 'w-[130px] text-right' },
+        { id: 'osszeg', label: 'Megítélt tám.', className: 'w-[130px] text-right' },
         { id: 'palyazati_dontes', label: 'Döntés', className: 'w-[130px]' },
         { id: 'palyazat_targya', label: 'Pályázat tárgya', className: 'w-[30%] min-w-[300px]' },
     ];
@@ -125,8 +126,11 @@ export function RawDataTable({ projects, maxRows }: RawDataTableProps) {
                                     <td className="px-4 py-3 text-foreground truncate" title={project.besorolas}>
                                         {project.besorolas}
                                     </td>
-                                    <td className="px-4 py-3 text-right font-medium tabular-nums whitespace-nowrap">
+                                    <td className="px-4 py-3 text-right font-medium tabular-nums whitespace-nowrap text-muted-foreground">
                                         {formatCurrency(project.tamogatas)}
+                                    </td>
+                                    <td className="px-4 py-3 text-right font-bold tabular-nums whitespace-nowrap text-foreground">
+                                        {formatCurrency(project.osszeg)}
                                     </td>
                                     <td className="px-4 py-3 whitespace-nowrap">
                                         <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[project.palyazati_dontes] || 'bg-muted text-foreground border-border'}`}>

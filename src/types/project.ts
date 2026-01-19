@@ -6,6 +6,7 @@ export interface Project {
   szekhely_varos: string;
   szekhely_orszag: string;
   szervezet_tipusa: string;
+  osszeg: number;
   tamogatas: number;
   palyazati_dontes: string;
   palyazat_targya: string;
@@ -22,6 +23,7 @@ export interface FilterState {
   minOsszeg: number;
   maxOsszeg: number;
   groupBy?: 'none' | 'szervezet' | 'varos' | 'besorolas' | 'szervezet_tipusa' | 'dontes';
+  activeValueType: 'requested' | 'awarded';
 }
 
 export interface GroupedProject {
@@ -29,13 +31,14 @@ export interface GroupedProject {
   name: string;
   adoszama?: string;
   count: number;
+  osszeg: number;
   tamogatas: number;
 }
 
 export interface AggregatedData {
-  osszesTamogatas: number;
+  osszesOsszeg: number;
   projektekSzama: number;
-  atlagTamogatas: number;
+  atlagOsszeg: number;
   varosokSzerint: Record<string, { count: number; osszeg: number }>;
   besorolasSzerint: Record<string, { count: number; osszeg: number }>;
   dontesSzerint: Record<string, { count: number; osszeg: number }>;

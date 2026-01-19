@@ -9,7 +9,7 @@ interface ProjectTableProps {
   maxRows?: number;
 }
 
-type SortField = 'palyazat_targya' | 'szervezet_neve' | 'szekhely_varos' | 'tamogatas' | 'palyazati_dontes';
+type SortField = 'palyazat_targya' | 'szervezet_neve' | 'szekhely_varos' | 'osszeg' | 'tamogatas' | 'palyazati_dontes';
 type SortDirection = 'asc' | 'desc';
 
 function formatCurrency(amount: number): string {
@@ -32,7 +32,7 @@ const statusColors: Record<string, string> = {
 };
 
 export function ProjectTable({ projects, groupedProjects, maxRows }: ProjectTableProps) {
-  const [sortField, setSortField] = useState<SortField>('tamogatas');
+  const [sortField, setSortField] = useState<SortField>('osszeg');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [page, setPage] = useState(0);
   const rowsPerPage = maxRows || 20;
@@ -64,6 +64,7 @@ export function ProjectTable({ projects, groupedProjects, maxRows }: ProjectTabl
         case 'palyazati_dontes':
           comparison = (pA[sortField] || '').localeCompare(pB[sortField] || '', 'hu');
           break;
+        case 'osszeg':
         case 'tamogatas':
           comparison = pA[sortField] - pB[sortField];
           break;
@@ -74,6 +75,8 @@ export function ProjectTable({ projects, groupedProjects, maxRows }: ProjectTabl
       const gB = b as GroupedProject;
       if (sortField === 'tamogatas') {
         comparison = gA.tamogatas - gB.tamogatas;
+      } else if (sortField === 'osszeg') {
+        comparison = gA.osszeg - gB.osszeg;
       } else if (sortField === 'szervezet_neve') {
         comparison = gA.name.localeCompare(gB.name, 'hu');
       }
@@ -129,8 +132,17 @@ export function ProjectTable({ projects, groupedProjects, maxRows }: ProjectTabl
                   onClick={() => handleSort('tamogatas')}
                 >
                   <div className="flex items-center justify-end gap-1">
-                    Támogatás
+                    Igényelt tám.
                     <SortIcon field="tamogatas" />
+                  </div>
+                </th>
+                <th
+                  className="w-[160px] cursor-pointer hover:bg-muted/80 px-4 py-3 text-right"
+                  onClick={() => handleSort('osszeg')}
+                >
+                  <div className="flex items-center justify-end gap-1">
+                    Megítélt tám.
+                    <SortIcon field="osszeg" />
                   </div>
                 </th>
                 <th
@@ -157,8 +169,11 @@ export function ProjectTable({ projects, groupedProjects, maxRows }: ProjectTabl
                     <td colSpan={2} className="text-foreground">
                       {group.count} db projekt
                     </td>
-                    <td className="text-right font-bold tabular-nums text-primary">
+                    <td className="text-right font-medium tabular-nums text-muted-foreground">
                       {formatCurrency(group.tamogatas)}
+                    </td>
+                    <td className="text-right font-bold tabular-nums text-primary">
+                      {formatCurrency(group.osszeg)}
                     </td>
                     <td></td>
                   </tr>
@@ -176,8 +191,11 @@ export function ProjectTable({ projects, groupedProjects, maxRows }: ProjectTabl
                     </td>
                     <td className="px-4 py-3 align-top">{project.szekhely_varos}</td>
                     <td className="max-w-[150px] truncate px-4 py-3 align-top text-foreground">{project.besorolas}</td>
-                    <td className="px-4 py-3 align-top text-right font-medium tabular-nums">
+                    <td className="px-4 py-3 align-top text-right font-medium tabular-nums text-muted-foreground">
                       {formatCurrency(project.tamogatas)}
+                    </td>
+                    <td className="px-4 py-3 align-top text-right font-bold tabular-nums text-foreground">
+                      {formatCurrency(project.osszeg)}
                     </td>
                     <td className="px-4 py-3 align-top">
                       <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[project.palyazati_dontes] || 'bg-muted text-foreground border-border'}`}>

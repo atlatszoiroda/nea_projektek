@@ -16,7 +16,7 @@ export default function Letoltes() {
 
     const headers = [
       'Azonosító', 'Szervezet neve', 'Adószám', 'Besorolás', 'Székhely város',
-      'Székhely ország', 'Szervezet típusa', 'Támogatás', 'Pályázati döntés', 'Pályázat tárgya'
+      'Székhely ország', 'Szervezet típusa', 'Igényelt támogatás', 'Megítélt támogatás', 'Pályázati döntés', 'Pályázat tárgya'
     ];
 
     const rows = projects.map(p => [
@@ -28,6 +28,7 @@ export default function Letoltes() {
       p.szekhely_orszag,
       `"${(p.szervezet_tipusa || '').replace(/"/g, '""')}"`,
       p.tamogatas,
+      p.osszeg,
       p.palyazati_dontes,
       `"${(p.palyazat_targya || '').replace(/"/g, '""')}"`
     ].join(','));

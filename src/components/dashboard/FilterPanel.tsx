@@ -1,4 +1,4 @@
-import { Search, X, Filter, BarChart2 } from 'lucide-react';
+import { Search, X, Filter, BarChart2, ArrowRightLeft } from 'lucide-react';
 import { FilterState } from '@/types/project';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,7 +37,8 @@ export function FilterPanel({
     filters.varos.length > 0 ||
     filters.besorolas.length > 0 ||
     filters.szervezet_tipusa.length > 0 ||
-    (filters.groupBy && filters.groupBy !== 'none');
+    (filters.groupBy && filters.groupBy !== 'none') ||
+    filters.activeValueType !== 'awarded'; // Consider non-default as active filter
 
   return (
     <div className="space-y-4 rounded-xl border border-border bg-card p-4">
@@ -141,6 +142,28 @@ export function FilterPanel({
             ))}
           </SelectContent>
         </Select>
+
+        {/* Value Type Toggle */}
+        <div className="flex items-center rounded-md border border-border bg-secondary p-1">
+          <button
+            onClick={() => onUpdateFilter('activeValueType', 'awarded')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${filters.activeValueType === 'awarded'
+              ? 'bg-background shadow-sm text-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+              }`}
+          >
+            Megítélt
+          </button>
+          <button
+            onClick={() => onUpdateFilter('activeValueType', 'requested')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${filters.activeValueType === 'requested'
+              ? 'bg-background shadow-sm text-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+              }`}
+          >
+            Igényelt
+          </button>
+        </div>
 
         {/* Grouping Filter - Hide if showGrouping is false */}
         {showGrouping && (

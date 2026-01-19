@@ -22,6 +22,7 @@ const defaultFilters: FilterState = {
   minOsszeg: 0,
   maxOsszeg: Infinity,
   groupBy: 'none',
+  activeValueType: 'awarded',
 };
 
 export function useProjectData(initialFilters?: Partial<FilterState>) {
@@ -54,6 +55,8 @@ export function useProjectData(initialFilters?: Partial<FilterState>) {
   }, []);
 
   const filteredProjects = useMemo(() => {
+    const getValue = (p: Project) => filters.activeValueType === 'awarded' ? p.osszeg : p.tamogatas;
+
     return projects.filter(project => {
       // Search query - search by name, organization+tax number, city, id
       if (filters.searchQuery) {
@@ -93,10 +96,11 @@ export function useProjectData(initialFilters?: Partial<FilterState>) {
       }
 
       // Amount range
-      if (project.tamogatas < filters.minOsszeg) {
+      const value = getValue(project);
+      if (value < filters.minOsszeg) {
         return false;
       }
-      if (filters.maxOsszeg !== Infinity && project.tamogatas > filters.maxOsszeg) {
+      if (filters.maxOsszeg !== Infinity && value > filters.maxOsszeg) {
         return false;
       }
 
@@ -106,9 +110,9 @@ export function useProjectData(initialFilters?: Partial<FilterState>) {
 
   const aggregatedData: AggregatedData = useMemo(() => {
     const data: AggregatedData = {
-      osszesTamogatas: 0,
+      osszesOsszeg: 0,
       projektekSzama: filteredProjects.length,
-      atlagTamogatas: 0,
+      atlagOsszeg: 0,
       varosokSzerint: {},
       besorolasSzerint: {},
       dontesSzerint: {},
@@ -117,57 +121,59 @@ export function useProjectData(initialFilters?: Partial<FilterState>) {
 
     filteredProjects.forEach(project => {
       const isNyertes = project.palyazati_dontes?.toLowerCase() === 'nyertes';
+      const value = filters.activeValueType === 'awarded' ? project.osszeg : project.tamogatas;
 
-      data.osszesTamogatas += project.tamogatas;
+      data.osszesOsszeg += value;
 
       // By city
       if (!data.varosokSzerint[project.szekhely_varos]) {
         data.varosokSzerint[project.szekhely_varos] = { count: 0, osszeg: 0 };
       }
       data.varosokSzerint[project.szekhely_varos].count++;
-      data.varosokSzerint[project.szekhely_varos].osszeg += project.tamogatas;
+      data.varosokSzerint[project.szekhely_varos].osszeg += value;
 
       // By classification
       if (!data.besorolasSzerint[project.besorolas]) {
         data.besorolasSzerint[project.besorolas] = { count: 0, osszeg: 0 };
       }
       data.besorolasSzerint[project.besorolas].count++;
-      data.besorolasSzerint[project.besorolas].osszeg += project.tamogatas;
+      data.besorolasSzerint[project.besorolas].osszeg += value;
 
       // By decision
       if (!data.dontesSzerint[project.palyazati_dontes]) {
         data.dontesSzerint[project.palyazati_dontes] = { count: 0, osszeg: 0 };
       }
       data.dontesSzerint[project.palyazati_dontes].count++;
-      data.dontesSzerint[project.palyazati_dontes].osszeg += project.tamogatas;
+      data.dontesSzerint[project.palyazati_dontes].osszeg += value;
 
       // By organization type
       if (!data.szervezetTipusSzerint[project.szervezet_tipusa]) {
         data.szervezetTipusSzerint[project.szervezet_tipusa] = { count: 0, osszeg: 0 };
       }
       data.szervezetTipusSzerint[project.szervezet_tipusa].count++;
-      data.szervezetTipusSzerint[project.szervezet_tipusa].osszeg += project.tamogatas;
+      data.szervezetTipusSzerint[project.szervezet_tipusa].osszeg += value;
     });
 
     const nyertesTotalCount = (data.dontesSzerint['Nyertes']?.count || 0) + (data.dontesSzerint['nyertes']?.count || 0);
-    data.atlagTamogatas = nyertesTotalCount > 0
-      ? data.osszesTamogatas / nyertesTotalCount
+    data.atlagOsszeg = nyertesTotalCount > 0
+      ? data.osszesOsszeg / nyertesTotalCount
       : 0;
 
     return data;
-  }, [filteredProjects]);
+  }, [filteredProjects, filters.activeValueType]);
 
   const globalStats = useMemo(() => {
     const winners = projects.filter(p => p.palyazati_dontes?.toLowerCase() === 'nyertes');
     const totalWinners = winners.length;
-    const totalSupport = winners.reduce((sum, p) => sum + p.tamogatas, 0);
+    const getValue = (p: Project) => filters.activeValueType === 'awarded' ? p.osszeg : p.tamogatas;
+    const totalSupport = winners.reduce((sum, p) => sum + getValue(p), 0);
     const averageWinnerSupport = totalWinners > 0 ? totalSupport / totalWinners : 0;
 
     return {
       totalWinners,
       averageWinnerSupport
     };
-  }, [projects]);
+  }, [projects, filters.activeValueType]);
 
   const groupedProjects = useMemo(() => {
     if (!filters.groupBy || filters.groupBy === 'none') return null;
@@ -209,15 +215,17 @@ export function useProjectData(initialFilters?: Partial<FilterState>) {
           name,
           adoszama,
           count: 0,
-          tamogatas: 0
+          osszeg: 0,
+          tamogatas: 0,
         };
       }
       groups[key].count++;
+      groups[key].osszeg += project.osszeg;
       groups[key].tamogatas += project.tamogatas;
     });
 
-    return Object.values(groups).sort((a, b) => b.tamogatas - a.tamogatas);
-  }, [filteredProjects, filters.groupBy]);
+    return Object.values(groups).sort((a, b) => b.osszeg - a.osszeg);
+  }, [filteredProjects, filters.groupBy, filters.activeValueType]);
 
   const uniqueValues = useMemo(() => {
     // Calculate total amounts per category for sorting
@@ -226,17 +234,18 @@ export function useProjectData(initialFilters?: Partial<FilterState>) {
     const orgTypeAmounts: Record<string, number> = {};
 
     projects.forEach(p => {
+      const value = filters.activeValueType === 'awarded' ? p.osszeg : p.tamogatas;
       // Decision
       if (p.palyazati_dontes) {
-        decisionAmounts[p.palyazati_dontes] = (decisionAmounts[p.palyazati_dontes] || 0) + p.tamogatas;
+        decisionAmounts[p.palyazati_dontes] = (decisionAmounts[p.palyazati_dontes] || 0) + value;
       }
       // Classification
       if (p.besorolas) {
-        classificationAmounts[p.besorolas] = (classificationAmounts[p.besorolas] || 0) + p.tamogatas;
+        classificationAmounts[p.besorolas] = (classificationAmounts[p.besorolas] || 0) + value;
       }
       // Organization Type
       if (p.szervezet_tipusa) {
-        orgTypeAmounts[p.szervezet_tipusa] = (orgTypeAmounts[p.szervezet_tipusa] || 0) + p.tamogatas;
+        orgTypeAmounts[p.szervezet_tipusa] = (orgTypeAmounts[p.szervezet_tipusa] || 0) + value;
       }
     });
 
@@ -252,7 +261,7 @@ export function useProjectData(initialFilters?: Partial<FilterState>) {
       szervezetTipusok: [...new Set(projects.map(p => p.szervezet_tipusa))].filter(Boolean)
         .sort((a, b) => (orgTypeAmounts[b] || 0) - (orgTypeAmounts[a] || 0)),
     };
-  }, [projects]);
+  }, [projects, filters.activeValueType]);
 
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters(prev => ({ ...prev, [key]: value }));

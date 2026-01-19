@@ -52,10 +52,10 @@ export default function Terkep() {
         acc[city] = { count: 0, osszeg: 0 };
       }
       acc[city].count += 1;
-      acc[city].osszeg += project.tamogatas;
+      acc[city].osszeg += filters.activeValueType === 'awarded' ? project.osszeg : project.tamogatas;
     }
     return acc;
-  }, [filteredProjects]);
+  }, [filteredProjects, filters.activeValueType]);
 
   if (loading) {
     return (
@@ -70,7 +70,7 @@ export default function Terkep() {
   return (
     <Layout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between relative z-10">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between relative z-10">
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-info/10">
               <Map className="h-6 w-6 text-info" />
@@ -83,7 +83,7 @@ export default function Terkep() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             {/* City Search - Separated from filters */}
             <div className="flex items-center gap-2 border-r border-border pr-4 mr-2">
               <span className="text-sm font-medium text-muted-foreground">Város keresése:</span>
@@ -104,7 +104,7 @@ export default function Terkep() {
               </Select>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-medium text-muted-foreground">Szűrés:</span>
 
               <Select
@@ -164,6 +164,28 @@ export default function Terkep() {
                 </SelectContent>
               </Select>
 
+              {/* Support Type Toggle */}
+              <div className="flex items-center rounded-md border border-border bg-secondary p-1">
+                <button
+                  onClick={() => updateFilter('activeValueType', 'awarded')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${filters.activeValueType === 'awarded'
+                    ? 'bg-background shadow-sm text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                >
+                  Megítélt
+                </button>
+                <button
+                  onClick={() => updateFilter('activeValueType', 'requested')}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${filters.activeValueType === 'requested'
+                    ? 'bg-background shadow-sm text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                >
+                  Igényelt
+                </button>
+              </div>
+
               {(activeCity || filters.dontes.length > 0 || filters.besorolas.length > 0 || filters.szervezet_tipusa.length > 0) && (
                 <Button
                   variant="ghost"
@@ -183,7 +205,7 @@ export default function Terkep() {
         </div>
 
         <ProjectMap
-          key={`${filters.dontes.join('-')}-${filters.besorolas.join('-')}-${filters.szervezet_tipusa.join('-')}`}
+          key={`${filters.dontes.join('-')}-${filters.besorolas.join('-')}-${filters.szervezet_tipusa.join('-')}-${filters.activeValueType}`}
           projects={filteredProjects}
           aggregatedByCity={filteredAggregatedByCity}
           activeCity={activeCity}

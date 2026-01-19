@@ -22,6 +22,7 @@ export default function TopCharts() {
         projects,
         loading,
         uniqueValues,
+        filters,
     } = useProjectData();
 
     const topWinners = useMemo(() => {
@@ -56,7 +57,8 @@ export default function TopCharts() {
 
             const winner = winnersMap.get(key)!;
             winner.count += 1; // Count this project
-            winner.value += (Number(project.tamogatas) || 0);
+            const val = filters.activeValueType === 'awarded' ? project.osszeg : project.tamogatas;
+            winner.value += (Number(val) || 0);
         });
 
         const allWinners = Array.from(winnersMap.values());
@@ -69,7 +71,7 @@ export default function TopCharts() {
                 .sort((a, b) => b.count - a.count)
                 .slice(0, 50)
         };
-    }, [projects]);
+    }, [projects, filters.activeValueType]);
 
     if (loading) {
         return (
